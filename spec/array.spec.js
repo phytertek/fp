@@ -96,4 +96,13 @@ describe('Array Methods', () => {
     test('should replace the element at the given index with the given element in the specified array', () =>
       expect(array.update(1)('b')([1, 2, 3])).toEqual([1, 'b', 3]));
   });
+
+  describe('hasMatchIn', () => {
+    test('should return true if any element matches exist between two given arrays', () => {
+      expect(array.hasMatchIn([1, 2, 3])([3, 4, 5])).toBeTruthy();
+    });
+    test('should return false if no element matches exist between two given arrays', () => {
+      expect(array.hasMatchIn([1, 2])([3, 4, 5])).toBeFalsy();
+    });
+  });
 });
