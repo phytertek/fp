@@ -1,4 +1,4 @@
-const object = require('./object');
+const object = require('../lib/object');
 describe('Object Methods', () => {
   describe('assoc', () => {
     test('should add supplied key and value args as key/val pair in supplied object', () => {
@@ -79,6 +79,60 @@ describe('Object Methods', () => {
 
     test('should handle duplicate values by appending all keys to array on value property', () => {
       expect(object.invert({ a: 1, b: 1, c: 1 })['1']).toEqual(['a', 'b', 'c']);
+    });
+  });
+
+  describe('evolve', () => {
+    test('should return shallow clone if no functions provided', () => {
+      expect(object.evolve()({ a: 1, b: 2 })).toEqual({ a: 1, b: 2 });
+    });
+    test('should evolve properties by specified functions', () => {
+      expect(object.evolve({ a: v => v + 1 })({ a: 2 })).toEqual({ a: 3 });
+    });
+  });
+
+  describe('omit', () => {
+    test('should return clone of given object without the given enumerated properties', () => {
+      const original = { a: 1, b: 2, c: 3 };
+      const omit = object.omit(['a', 'b'])(original);
+      expect(omit).toEqual({ c: 3 });
+    });
+  });
+
+  describe('path', () => {
+    test('should return the value located at the property path specified in the given array from the specified object', () => {
+      const p = ['a', 'b', 'c', 'd'];
+      const obj = { a: { b: { c: { d: 'yo' } } } };
+      expect(object.path(p)(obj)).toBe('yo');
+    });
+    test('should return undefined if invalid path', () => {
+      const p = ['a', 'b', 'c', 'd'];
+      const obj = { z: { y: { x: { w: 'dude' } } } };
+      expect(object.path(p)(obj)).toBeUndefined();
+    });
+  });
+
+  describe('pick', () => {
+    test('should return an object with the given properties from the specified object', () => {
+      const p = ['a', 'b', 'c'];
+      const obj = { a: 1, b: 2, c: 3, d: 'secret' };
+      expect(object.pick(p)(obj)).toEqual({ a: 1, b: 2, c: 3 });
+    });
+    test("should ignore properties that don't exist", () => {
+      const p = ['x', 'y', 'z'];
+      const obj = { y: 1, z: 2, a: 'secret' };
+      expect(object.pick(p)(obj)).toEqual({ y: 1, z: 2 });
+    });
+  });
+
+  describe('keys', () => {
+    test('should return an array of all property names in a given object', () =>
+      expect(object.keys({ a: 1, b: 2, c: 3 })).toEqual(['a', 'b', 'c']));
+  });
+
+  describe('values', () => {
+    test('should return an array of values for all properties in a given object', () => {
+      expect(object.values({ a: 1, b: 2, c: 3 })).toEqual([1, 2, 3]);
     });
   });
 });

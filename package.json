@@ -3,13 +3,23 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "dependencies": {
-    "jest": "^22.4.3",
-    "nodemon": "^1.17.2",
-    "ramda": "^0.25.0"
-  },
   "scripts": {
-    "start": "clear && nodemon index.js",
-    "test": "jest -o"
+    "test": "jest --coverage",
+    "patch": "npm run git:patch && npm run github:push",
+    "git:patch":
+      "git add . && git commit -m 'publish patch' && npm run patch:publish",
+    "patch:publish": "npm version patch && npm publish",
+    "minor": "npm run git:minor && npm run github:push",
+    "git:minor":
+      "git add . && git commit -m 'publish minor' && npm run minor:publish",
+    "minor:publish": "npm version minor && npm publish",
+    "major": "npm run git:major && npm run github:push",
+    "git:major":
+      "git add . && git commit -m 'publish major' && npm run major:publish",
+    "major:publish": "npm version major && npm publish",
+    "github:push": "git push origin master"
+  },
+  "devDependencies": {
+    "jest": "^22.4.3"
   }
 }
